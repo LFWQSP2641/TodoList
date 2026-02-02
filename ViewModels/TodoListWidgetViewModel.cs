@@ -12,6 +12,11 @@ public partial class TodoListWidgetViewModel : ViewModelBase
 {
     public ObservableCollection<TodoItem> Todos { get; } = [];
 
+    [ObservableProperty]
+    public partial TodoItem? SelectedTodo { get; set; }
+
+    private bool CanEditSelectedTodo => SelectedTodo != null;
+
     [RelayCommand]
     private async Task AddTodoAsync()
     {
@@ -24,6 +29,34 @@ public partial class TodoListWidgetViewModel : ViewModelBase
         {
             var resultTodo = todoEditorViewModel.GetResult();
             Todos.Add(resultTodo);
+        }
+    }
+
+    [RelayCommand(CanExecute = nameof(CanEditSelectedTodo))]
+    private void RemoveTodo()
+    {
+        if (SelectedTodo != null)
+        {
+            Todos.Remove(SelectedTodo);
+        }
+    }
+
+    [RelayCommand(CanExecute = nameof(CanEditSelectedTodo))]
+    private async Task EditTodoAsync()
+    {
+        if (SelectedTodo == null) return;
+        var dialogService = Ioc.Default.GetService<IDialogService>()!;
+        var todoEditorViewModel = new TodoEditorViewModel(SelectedTodo);
+        var windowsResult = await dialogService.ShowDialogAsync(todoEditorViewModel);
+        if (windowsResult == true)
+        {
+            var resultTodo = todoEditorViewModel.GetResult();
+            var index = Todos.IndexOf(SelectedTodo);
+            if (index >= 0)
+            {
+                Todos[index] = resultTodo;
+                SelectedTodo = resultTodo;
+            }
         }
     }
 }

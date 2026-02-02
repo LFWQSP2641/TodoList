@@ -21,7 +21,11 @@
                 Command="{Binding AddTodoCommand}"
                 Content="添加代办" />
         </WrapPanel>
-        <ListBox ItemsSource="{Binding Todos}">
+        <ListBox
+            Background="Transparent"
+            ItemsSource="{Binding Todos}"
+            SelectedItem="{Binding SelectedTodo, Mode=TwoWay}"
+            SelectionMode="Single,Toggle">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal" Spacing="10">
@@ -30,6 +34,13 @@
                     </StackPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>
+            <ListBox.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Command="{Binding AddTodoCommand}" Header="添加" />
+                    <MenuItem Command="{Binding EditTodoCommand}" Header="修改" />
+                    <MenuItem Command="{Binding RemoveTodoCommand}" Header="删除" />
+                </ContextMenu>
+            </ListBox.ContextMenu>
         </ListBox>
     </DockPanel>
 
