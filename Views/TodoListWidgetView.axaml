@@ -1,0 +1,36 @@
+<UserControl
+    x:Class="TodoList.Views.TodoListWidgetView"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewModels="clr-namespace:TodoList.ViewModels"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    x:DataType="viewModels:TodoListWidgetViewModel"
+    mc:Ignorable="d">
+    <Design.DataContext>
+        <viewModels:TodoListWidgetViewModel />
+    </Design.DataContext>
+
+    <DockPanel>
+        <WrapPanel DockPanel.Dock="Top" Orientation="Horizontal">
+            <Button
+                Margin="4"
+                VerticalAlignment="Center"
+                Command="{Binding AddTodoCommand}"
+                Content="添加代办" />
+        </WrapPanel>
+        <ListBox ItemsSource="{Binding Todos}">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <TextBlock Text="{Binding Title}" />
+                        <TextBlock Text="{Binding Description}" />
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+    </DockPanel>
+
+</UserControl>
