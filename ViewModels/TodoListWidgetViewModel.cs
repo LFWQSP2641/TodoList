@@ -22,10 +22,8 @@ public partial class TodoListWidgetViewModel : ViewModelBase
     {
         var newTodo = new TodoItem { Title = "New Todo" };
         var dialogService = Ioc.Default.GetService<IDialogService>()!;
-        var todoEditorViewModel = new TodoEditorViewModel(newTodo);
-
-        var windowsResult = await dialogService.ShowDialogAsync(todoEditorViewModel);
-        if (windowsResult == true)
+        var (result, todoEditorViewModel) = await dialogService.ShowDialogAsync<TodoEditorViewModel, TodoItem>(newTodo);
+        if (result == true)
         {
             var resultTodo = todoEditorViewModel.GetResult();
             Todos.Add(resultTodo);
@@ -46,9 +44,8 @@ public partial class TodoListWidgetViewModel : ViewModelBase
     {
         if (SelectedTodo == null) return;
         var dialogService = Ioc.Default.GetService<IDialogService>()!;
-        var todoEditorViewModel = new TodoEditorViewModel(SelectedTodo);
-        var windowsResult = await dialogService.ShowDialogAsync(todoEditorViewModel);
-        if (windowsResult == true)
+        var (result, todoEditorViewModel) = await dialogService.ShowDialogAsync<TodoEditorViewModel, TodoItem>(SelectedTodo);
+        if (result == true)
         {
             var resultTodo = todoEditorViewModel.GetResult();
             var index = Todos.IndexOf(SelectedTodo);

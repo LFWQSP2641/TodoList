@@ -6,7 +6,7 @@ using TodoList.ViewModels.Interfaces;
 
 namespace TodoList.ViewModels;
 
-public partial class TodoEditorViewModel : ViewModelBase, IDialogViewModel<TodoItem>, IDialogRequestClose
+public partial class TodoEditorViewModel : ViewModelBase, IDialogViewModel<TodoItem>, IDialogRequestClose, IDialogInitialize<TodoItem>
 {
     public event Action<bool?>? RequestClose;
 
@@ -18,10 +18,15 @@ public partial class TodoEditorViewModel : ViewModelBase, IDialogViewModel<TodoI
 
     public bool? DialogResult { get; set; }
 
-    public TodoEditorViewModel(TodoItem? todoItem = null)
+    public TodoEditorViewModel()
     {
-        Title = todoItem?.Title ?? "";
-        Description = todoItem?.Description;
+        Title = "";
+    }
+
+    public void Initialize(TodoItem todoItem)
+    {
+        Title = todoItem.Title ?? "";
+        Description = todoItem.Description;
     }
     
     public TodoItem GetResult()
