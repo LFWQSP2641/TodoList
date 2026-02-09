@@ -9,21 +9,21 @@ namespace TodoList.Services;
 
 public class DialogService(Window mainWindow, IServiceProvider serviceProvider) : IDialogService
 {
-    public async Task<(bool? Result, TViewModel ViewModel)> ShowDialogAsync<TViewModel>()
-        where TViewModel : IDialogRequestClose
+    public async Task<DialogResult<TResult>> ShowDialogAsync<TViewModel, TResult>()
+        where TViewModel : IDialogRequestClose, IDialogResultProvider<TResult>
     {
         var vm = serviceProvider.GetRequiredService<TViewModel>();
         var result = await ShowDialogInternalAsync(vm);
-        return (result, vm);
+        return new DialogResult<TResult>(result, vm.GetResult());
     }
 
-    public async Task<(bool? Result, TViewModel ViewModel)> ShowDialogAsync<TViewModel, TArg>(TArg arg)
-        where TViewModel : IDialogRequestClose, IDialogInitialize<TArg>
+    public async Task<DialogResult<TResult>> ShowDialogAsync<TViewModel, TArg, TResult>(TArg arg)
+        where TViewModel : IDialogRequestClose, IDialogInitialize<TArg>, IDialogResultProvider<TResult>
     {
         var vm = serviceProvider.GetRequiredService<TViewModel>();
         vm.Initialize(arg);
         var result = await ShowDialogInternalAsync(vm);
-        return (result, vm);
+        return new DialogResult<TResult>(result, vm.GetResult());
     }
 
     private async Task<bool?> ShowDialogInternalAsync<TViewModel>(TViewModel vm) where TViewModel : IDialogRequestClose

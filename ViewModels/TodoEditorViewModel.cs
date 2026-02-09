@@ -6,7 +6,7 @@ using TodoList.ViewModels.Interfaces;
 
 namespace TodoList.ViewModels;
 
-public partial class TodoEditorViewModel : ViewModelBase, IDialogViewModel<TodoItem>, IDialogRequestClose, IDialogInitialize<TodoItem>
+public partial class TodoEditorViewModel : ViewModelBase, IDialogResultProvider<TodoItem>, IDialogRequestClose, IDialogInitialize<TodoItem>
 {
     public event Action<bool?>? RequestClose;
 
@@ -15,8 +15,6 @@ public partial class TodoEditorViewModel : ViewModelBase, IDialogViewModel<TodoI
     
     [ObservableProperty]
     public partial string? Description { get; set; }
-
-    public bool? DialogResult { get; set; }
 
     public TodoEditorViewModel()
     {
@@ -40,14 +38,12 @@ public partial class TodoEditorViewModel : ViewModelBase, IDialogViewModel<TodoI
     [RelayCommand]
     private void Save()
     {
-        DialogResult = true;
-        RequestClose?.Invoke(DialogResult);
+        RequestClose?.Invoke(true);
     }
 
     [RelayCommand]
     private void Cancel()
     {
-        DialogResult = false;
-        RequestClose?.Invoke(DialogResult);
+        RequestClose?.Invoke(false);
     }
 }

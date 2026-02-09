@@ -22,11 +22,10 @@ public partial class TodoListWidgetViewModel : ViewModelBase
     {
         var newTodo = new TodoItem { Title = "New Todo" };
         var dialogService = Ioc.Default.GetService<IDialogService>()!;
-        var (result, todoEditorViewModel) = await dialogService.ShowDialogAsync<TodoEditorViewModel, TodoItem>(newTodo);
-        if (result == true)
+        var dialogResult = await dialogService.ShowDialogAsync<TodoEditorViewModel, TodoItem, TodoItem>(newTodo);
+        if (dialogResult.Result == true && dialogResult.Payload is not null)
         {
-            var resultTodo = todoEditorViewModel.GetResult();
-            Todos.Add(resultTodo);
+            Todos.Add(dialogResult.Payload);
         }
     }
 
@@ -44,15 +43,14 @@ public partial class TodoListWidgetViewModel : ViewModelBase
     {
         if (SelectedTodo == null) return;
         var dialogService = Ioc.Default.GetService<IDialogService>()!;
-        var (result, todoEditorViewModel) = await dialogService.ShowDialogAsync<TodoEditorViewModel, TodoItem>(SelectedTodo);
-        if (result == true)
+        var dialogResult = await dialogService.ShowDialogAsync<TodoEditorViewModel, TodoItem, TodoItem>(SelectedTodo);
+        if (dialogResult.Result == true && dialogResult.Payload is not null)
         {
-            var resultTodo = todoEditorViewModel.GetResult();
             var index = Todos.IndexOf(SelectedTodo);
             if (index >= 0)
             {
-                Todos[index] = resultTodo;
-                SelectedTodo = resultTodo;
+                Todos[index] = dialogResult.Payload;
+                SelectedTodo = dialogResult.Payload;
             }
         }
     }

@@ -5,9 +5,9 @@ namespace TodoList.Services.Interfaces;
 
 public interface IDialogService
 {
-    Task<(bool? Result, TViewModel ViewModel)> ShowDialogAsync<TViewModel>()
-        where TViewModel : IDialogRequestClose;
+    Task<DialogResult<TResult>> ShowDialogAsync<TViewModel, TResult>()
+        where TViewModel : IDialogRequestClose, IDialogResultProvider<TResult>;
 
-    Task<(bool? Result, TViewModel ViewModel)> ShowDialogAsync<TViewModel, TArg>(TArg arg)
-        where TViewModel : IDialogRequestClose, IDialogInitialize<TArg>;
+    Task<DialogResult<TResult>> ShowDialogAsync<TViewModel, TArg, TResult>(TArg arg)
+        where TViewModel : IDialogRequestClose, IDialogInitialize<TArg>, IDialogResultProvider<TResult>;
 }
