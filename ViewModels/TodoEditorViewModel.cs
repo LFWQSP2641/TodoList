@@ -10,11 +10,16 @@ public partial class TodoEditorViewModel : ViewModelBase, IDialogResultProvider<
 {
     public event Action<bool?>? RequestClose;
 
+    private TodoItem? _selectedItem;
+
     [ObservableProperty]
     public partial string Title { get; set; }
     
     [ObservableProperty]
     public partial string? Description { get; set; }
+
+    [ObservableProperty]
+    public partial TodoLevel Level { get; set; } = TodoLevel.Medium;
 
     public TodoEditorViewModel()
     {
@@ -23,15 +28,21 @@ public partial class TodoEditorViewModel : ViewModelBase, IDialogResultProvider<
 
     public void Initialize(TodoItem todoItem)
     {
+        _selectedItem = todoItem;
         Title = todoItem.Title ?? "";
         Description = todoItem.Description;
+        Level = todoItem.Level;
     }
     
     public TodoItem GetResult()
     {
         return new TodoItem {
+            Id = _selectedItem?.Id ?? 0,
+            CreatedTime = _selectedItem?.CreatedTime ?? new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds(),
+            EditedTime = new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds(),
             Title = Title,
-            Description = Description
+            Description = Description,
+            Level = Level,
         };
     }
 

@@ -2,8 +2,11 @@
     x:Class="TodoList.Views.TodoEditorView"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:conv="clr-namespace:Avalonia.Controls.Converters;assembly=Avalonia.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:TodoList"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:models="clr-namespace:TodoList.Models"
     xmlns:viewModels="clr-namespace:TodoList.ViewModels"
     d:DesignHeight="450"
     d:DesignWidth="800"
@@ -12,6 +15,9 @@
     <Design.DataContext>
         <viewModels:TodoEditorViewModel />
     </Design.DataContext>
+    <UserControl.Resources>
+        <conv:EnumToBoolConverter x:Key="EnumToBoolConverter" />
+    </UserControl.Resources>
 
     <DockPanel>
         <StackPanel
@@ -21,7 +27,7 @@
             <Button Command="{Binding SaveCommand}" Content="确定" />
             <Button Command="{Binding CancelCommand}" Content="取消" />
         </StackPanel>
-        <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto">
+        <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto">
             <TextBlock
                 Grid.Row="0"
                 Grid.Column="0"
@@ -37,9 +43,33 @@
                 Grid.Row="1"
                 Grid.Column="0"
                 VerticalAlignment="Center"
+                Text="优先级" />
+            <StackPanel
+                Grid.Row="1"
+                Grid.Column="1"
+                VerticalAlignment="Center"
+                Orientation="Horizontal"
+                Spacing="10">
+                <RadioButton
+                    VerticalAlignment="Center"
+                    Content="低"
+                    IsChecked="{Binding Level, Converter={StaticResource EnumToBoolConverter}, ConverterParameter={x:Static models:TodoLevel.Low}}" />
+                <RadioButton
+                    VerticalAlignment="Center"
+                    Content="中"
+                    IsChecked="{Binding Level, Converter={StaticResource EnumToBoolConverter}, ConverterParameter={x:Static models:TodoLevel.Medium}}" />
+                <RadioButton
+                    VerticalAlignment="Center"
+                    Content="高"
+                    IsChecked="{Binding Level, Converter={StaticResource EnumToBoolConverter}, ConverterParameter={x:Static models:TodoLevel.High}}" />
+            </StackPanel>
+            <TextBlock
+                Grid.Row="2"
+                Grid.Column="0"
+                VerticalAlignment="Center"
                 Text="说明" />
             <TextBox
-                Grid.Row="1"
+                Grid.Row="2"
                 Grid.Column="1"
                 Width="400"
                 Height="100"

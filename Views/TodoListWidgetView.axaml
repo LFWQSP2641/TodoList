@@ -2,7 +2,9 @@
     x:Class="TodoList.Views.TodoListWidgetView"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:conv="clr-namespace:TodoList.Converter"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:TodoList"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:viewModels="clr-namespace:TodoList.ViewModels"
     d:DesignHeight="450"
@@ -12,6 +14,10 @@
     <Design.DataContext>
         <viewModels:TodoListWidgetViewModel />
     </Design.DataContext>
+    <UserControl.Resources>
+        <conv:TodoLevelDisplayConverter x:Key="TodoLevelDisplayConverter" />
+        <conv:UnixDateConverter x:Key="UnixDateConverter" />
+    </UserControl.Resources>
 
     <DockPanel>
         <WrapPanel DockPanel.Dock="Top" Orientation="Horizontal">
@@ -31,6 +37,9 @@
                     <StackPanel Orientation="Horizontal" Spacing="10">
                         <TextBlock Text="{Binding Title}" />
                         <TextBlock Text="{Binding Description}" />
+                        <TextBlock Text="{Binding CreatedTime, Converter={StaticResource UnixDateConverter}}" />
+                        <TextBlock Text="{Binding EditedTime, Converter={StaticResource UnixDateConverter}}" />
+                        <TextBlock Text="{Binding Level, Converter={StaticResource TodoLevelDisplayConverter}}" />
                     </StackPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>

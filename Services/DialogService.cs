@@ -38,16 +38,16 @@ public class DialogService(Window mainWindow, IServiceProvider serviceProvider) 
 
         TaskCompletionSource<bool?> tcs = new();
 
+        vm.RequestClose += OnRequestClose;
+
+        await window.ShowDialog<bool?>(mainWindow);
+        return await tcs.Task;
+
         void OnRequestClose(bool? result)
         {
             vm.RequestClose -= OnRequestClose;
             window.Close(result);
             tcs.SetResult(result);
         }
-
-        vm.RequestClose += OnRequestClose;
-
-        await window.ShowDialog<bool?>(mainWindow);
-        return await tcs.Task;
     }
 }
