@@ -50,9 +50,10 @@ jobs:
     - name: Compress
       env:
         PACKAGE_NAME: ${{ env.PACKAGE_NAME }}
+      if: startsWith(github.ref, 'refs/tags/v')
       shell: bash
       run: |
-        7z a -t7z -m0=lzma2 -mx=9 -mfb=64 -md=32m -ms=on -x!*.pdb -x!*.dbg "${{ env.PACKAGE_NAME }}.7z" "${{ env.OUTPUT_BASE }}"
+        7z a -t7z -m0=lzma2 -mx=9 -mfb=64 -md=32m -ms=on -xr!*.pdb -xr!*.dbg "${{ env.PACKAGE_NAME }}.7z" "${{ env.OUTPUT_BASE }}"
 
     - name: Release Package
       env:
