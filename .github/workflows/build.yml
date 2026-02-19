@@ -1,0 +1,66 @@
+name: Build
+
+on: push
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-publish:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            runtime: linux-x64
+          - os: windows-latest
+            runtime: win-x64
+
+    env:
+      OUTPUT_BASE: ${{ github.workspace }}/output
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v6
+
+    - name: Set Package Name
+      shell: bash
+      run: |
+        package_name="TodoList-${{ matrix.runtime }}"
+        echo "PACKAGE_NAME=${package_name}" >> $GITHUB_ENV
+
+    - name: Setup
+      uses: actions/setup-dotnet@v5
+      with:
+        dotnet-version: '10.0.x'
+
+    - name: Build
+      run: |
+        dotnet publish -c Release -r ${{ matrix.runtime }} -o ${{ env.OUTPUT_BASE }}
+
+    - name: Compress
+      env:
+        PACKAGE_NAME: ${{ env.PACKAGE_NAME }}
+      shell: bash
+      run: |
+        7z a -t7z -m0=lzma2 -mx=9 -mfb=64 -md=32m -ms=on "${{ env.PACKAGE_NAME }}.7z" "${{ env.OUTPUT_BASE }}"
+
+    - name: Upload build artifacts
+      env:
+        PACKAGE_NAME: ${{ env.PACKAGE_NAME }}
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ env.PACKAGE_NAME }}.7z
+        path: ${{ env.PACKAGE_NAME }}.7z
+        compression-level: 0
+
+    - name: Release Package
+      env:
+        PACKAGE_NAME: ${{ env.PACKAGE_NAME }}
+      if: startsWith(github.ref, 'refs/tags/v')
+      uses: softprops/action-gh-release@v2
+      with:
+        files: |
+          ${{ env.PACKAGE_NAME }}.7z
+        generate_release_notes: true
