@@ -27,30 +27,28 @@
                 Command="{Binding AddTodoCommand}"
                 Content="添加代办" />
         </WrapPanel>
-        <ListBox
+        <DataGrid
             Background="Transparent"
+            CanUserSortColumns="False"
+            IsReadOnly="True"
             ItemsSource="{Binding Todos}"
             SelectedItem="{Binding SelectedTodo, Mode=TwoWay}"
-            SelectionMode="Single,Toggle">
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <StackPanel Orientation="Horizontal" Spacing="10">
-                        <TextBlock Text="{Binding Title}" />
-                        <TextBlock Text="{Binding Description}" />
-                        <TextBlock Text="{Binding CreatedTime, Converter={StaticResource UnixDateConverter}}" />
-                        <TextBlock Text="{Binding EditedTime, Converter={StaticResource UnixDateConverter}}" />
-                        <TextBlock Text="{Binding Level, Converter={StaticResource TodoLevelDisplayConverter}}" />
-                    </StackPanel>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-            <ListBox.ContextMenu>
+            SelectionMode="Single">
+            <DataGrid.Columns>
+                <DataGridTextColumn Binding="{Binding Title}" Header="标题" />
+                <DataGridTextColumn Binding="{Binding Description}" Header="描述" />
+                <DataGridTextColumn Binding="{Binding CreatedTime, Converter={StaticResource UnixDateConverter}}" Header="创建时间" />
+                <DataGridTextColumn Binding="{Binding EditedTime, Converter={StaticResource UnixDateConverter}}" Header="修改时间" />
+                <DataGridTextColumn Binding="{Binding Level, Converter={StaticResource TodoLevelDisplayConverter}}" Header="优先级" />
+            </DataGrid.Columns>
+            <DataGrid.ContextMenu>
                 <ContextMenu>
                     <MenuItem Command="{Binding AddTodoCommand}" Header="添加" />
                     <MenuItem Command="{Binding EditTodoCommand}" Header="修改" />
                     <MenuItem Command="{Binding RemoveTodoCommand}" Header="删除" />
                 </ContextMenu>
-            </ListBox.ContextMenu>
-        </ListBox>
+            </DataGrid.ContextMenu>
+        </DataGrid>
     </DockPanel>
 
 </UserControl>
