@@ -39,21 +39,20 @@ jobs:
       run: |
         dotnet publish -c Release -r ${{ matrix.runtime }} -o ${{ env.OUTPUT_BASE }}
 
-    - name: Compress
-      env:
-        PACKAGE_NAME: ${{ env.PACKAGE_NAME }}
-      shell: bash
-      run: |
-        7z a -t7z -m0=lzma2 -mx=9 -mfb=64 -md=32m -ms=on "${{ env.PACKAGE_NAME }}.7z" "${{ env.OUTPUT_BASE }}"
-
     - name: Upload build artifacts
       env:
         PACKAGE_NAME: ${{ env.PACKAGE_NAME }}
       uses: actions/upload-artifact@v4
       with:
-        name: ${{ env.PACKAGE_NAME }}.7z
-        path: ${{ env.PACKAGE_NAME }}.7z
-        compression-level: 0
+        name: ${{ env.PACKAGE_NAME }}-debug
+        path: ${{ env.OUTPUT_BASE }}
+
+    - name: Compress
+      env:
+        PACKAGE_NAME: ${{ env.PACKAGE_NAME }}
+      shell: bash
+      run: |
+        7z a -t7z -m0=lzma2 -mx=9 -mfb=64 -md=32m -ms=on -x!*.pdb -x!*.dbg "${{ env.PACKAGE_NAME }}.7z" "${{ env.OUTPUT_BASE }}"
 
     - name: Release Package
       env:
