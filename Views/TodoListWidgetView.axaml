@@ -20,14 +20,18 @@
     </UserControl.Resources>
 
     <DockPanel>
-        <WrapPanel DockPanel.Dock="Top" Orientation="Horizontal">
+        <WrapPanel
+            Margin="{StaticResource Margin4}"
+            DockPanel.Dock="Top"
+            Orientation="Horizontal">
             <Button
-                Margin="4"
+                Margin="{StaticResource Margin4}"
                 VerticalAlignment="Center"
                 Command="{Binding AddTodoCommand}"
                 Content="添加代办" />
         </WrapPanel>
         <DataGrid
+            Margin="{StaticResource Margin4}"
             Background="Transparent"
             CanUserSortColumns="False"
             IsReadOnly="True"

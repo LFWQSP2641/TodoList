@@ -14,8 +14,7 @@
     <Design.DataContext>
         <vm:MainWindowViewModel />
     </Design.DataContext>
-
     <Grid>
-        <ContentControl Content="{Binding TodoListWidgetViewModel}" />
+        <ContentControl Margin="{StaticResource Margin4}" Content="{Binding TodoListWidgetViewModel}" />
     </Grid>
 </Window>

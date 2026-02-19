@@ -28,6 +28,8 @@
     <PackageReference Include="CommunityToolkit.Labs.Extensions.DependencyInjection" Version="0.1.251217-build.2433" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.3" />
+    <PackageReference Include="Semi.Avalonia" Version="11.3.7.3" />
+    <PackageReference Include="Semi.Avalonia.DataGrid" Version="11.3.7.3" />
   </ItemGroup>
 
   <ItemGroup>

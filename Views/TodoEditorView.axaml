@@ -19,37 +19,51 @@
         <conv:EnumToBoolConverter x:Key="EnumToBoolConverter" />
     </UserControl.Resources>
 
-    <DockPanel>
+    <DockPanel Margin="{StaticResource Margin4}">
         <StackPanel
+            Margin="{StaticResource Margin4}"
             HorizontalAlignment="Center"
             DockPanel.Dock="Bottom"
             Orientation="Horizontal">
-            <Button Command="{Binding SaveCommand}" Content="确定" />
-            <Button Command="{Binding CancelCommand}" Content="取消" />
+            <Button
+                Margin="{StaticResource Margin4}"
+                Command="{Binding SaveCommand}"
+                Content="确定" />
+            <Button
+                Margin="{StaticResource Margin4}"
+                Command="{Binding CancelCommand}"
+                Content="取消" />
         </StackPanel>
-        <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto">
+        <Grid
+            Margin="{StaticResource Margin4}"
+            ColumnDefinitions="Auto,*"
+            RowDefinitions="Auto,Auto,Auto">
             <TextBlock
                 Grid.Row="0"
                 Grid.Column="0"
+                Margin="{StaticResource Margin4}"
                 VerticalAlignment="Center"
                 Text="标题" />
             <TextBox
                 Grid.Row="0"
                 Grid.Column="1"
                 Width="200"
+                Margin="{StaticResource Margin4}"
                 VerticalAlignment="Center"
                 Text="{Binding Title}" />
             <TextBlock
                 Grid.Row="1"
                 Grid.Column="0"
+                Margin="{StaticResource Margin4}"
                 VerticalAlignment="Center"
                 Text="优先级" />
             <StackPanel
                 Grid.Row="1"
                 Grid.Column="1"
+                Margin="{StaticResource Margin4}"
                 VerticalAlignment="Center"
                 Orientation="Horizontal"
-                Spacing="10">
+                Spacing="8">
                 <RadioButton
                     VerticalAlignment="Center"
                     Content="低"
@@ -66,6 +80,7 @@
             <TextBlock
                 Grid.Row="2"
                 Grid.Column="0"
+                Margin="{StaticResource Margin4}"
                 VerticalAlignment="Center"
                 Text="说明" />
             <TextBox
@@ -73,6 +88,7 @@
                 Grid.Column="1"
                 Width="400"
                 Height="100"
+                Margin="{StaticResource Margin4}"
                 VerticalAlignment="Center"
                 AcceptsReturn="True"
                 Text="{Binding Description}" />
