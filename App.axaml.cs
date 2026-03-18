@@ -34,7 +34,7 @@ public partial class App : Application
             DisableAvaloniaDataAnnotationValidation();
 
             var services = new ServiceCollection();
-            services.AddSingleton<Window>(_ => desktop.MainWindow!);
+            services.AddSingleton<IClassicDesktopStyleApplicationLifetime>(desktop);
             services.AddSingleton<IDataTemplate>(locator);
             ConfigureServices(services);
             ConfigureViewModels(services);
@@ -42,8 +42,8 @@ public partial class App : Application
             var provider = services.BuildServiceProvider();
             Ioc.Default.ConfigureServices(provider);
 
-            var vm = Ioc.Default.GetService<MainWindowViewModel>();
-            var view = (Window)locator.Build(vm)!;
+            var vm = Ioc.Default.GetRequiredService<MainWindowViewModel>();
+            var view = Ioc.Default.GetRequiredService<MainWindowView>();
             view.DataContext = vm;
 
             desktop.MainWindow = view;

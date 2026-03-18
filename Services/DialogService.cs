@@ -1,4 +1,5 @@
 using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Threading.Tasks;
@@ -7,7 +8,7 @@ using TodoList.ViewModels.Interfaces;
 
 namespace TodoList.Services;
 
-public class DialogService(Window mainWindow, IServiceProvider serviceProvider) : IDialogService
+public class DialogService(IClassicDesktopStyleApplicationLifetime desktop, IServiceProvider serviceProvider) : IDialogService
 {
     public async Task<DialogResult<TResult>> ShowDialogAsync<TViewModel, TResult>()
         where TViewModel : IDialogRequestClose, IDialogResultProvider<TResult>
@@ -28,6 +29,9 @@ public class DialogService(Window mainWindow, IServiceProvider serviceProvider) 
 
     private async Task<bool?> ShowDialogInternalAsync<TViewModel>(TViewModel vm) where TViewModel : IDialogRequestClose
     {
+        var owner = desktop.MainWindow
+            ?? throw new InvalidOperationException("MainWindow is not initialized.");
+
         var window = new Window
         {
             Content = vm,
@@ -40,7 +44,7 @@ public class DialogService(Window mainWindow, IServiceProvider serviceProvider) 
 
         vm.RequestClose += OnRequestClose;
 
-        await window.ShowDialog<bool?>(mainWindow);
+        await window.ShowDialog<bool?>(owner);
         return await tcs.Task;
 
         void OnRequestClose(bool? result)
