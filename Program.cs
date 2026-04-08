@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Avalonia;
 
 namespace TodoList
@@ -16,6 +16,9 @@ namespace TodoList
         public static AppBuilder BuildAvaloniaApp()
             => AppBuilder.Configure<App>()
                 .UsePlatformDetect()
+#if DEBUG
+                .WithDeveloperTools()
+#endif
                 .WithInterFont()
                 .LogToTrace();
     }
