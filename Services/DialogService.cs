@@ -1,43 +1,35 @@
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
-using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Threading.Tasks;
 using TodoList.Services.Interfaces;
 using TodoList.ViewModels.Interfaces;
 
 namespace TodoList.Services;
 
-public class DialogService(IClassicDesktopStyleApplicationLifetime desktop, IServiceProvider serviceProvider) : IDialogService
+public class DialogService(IClassicDesktopStyleApplicationLifetime desktop)
+    : IDialogService
 {
-    public async Task<DialogResult<TResult>> ShowDialogAsync<TViewModel, TResult>()
-        where TViewModel : IDialogRequestClose, IDialogResultProvider<TResult>
+    public async Task<bool?> ShowDialogAsync<TViewModel>(TViewModel viewModel)
+        where TViewModel : IDialogRequestClose
     {
-        var vm = serviceProvider.GetRequiredService<TViewModel>();
-        var result = await ShowDialogInternalAsync(vm);
-        return new DialogResult<TResult>(result, vm.GetResult());
-    }
-
-    public async Task<DialogResult<TResult>> ShowDialogAsync<TViewModel, TArg, TResult>(TArg arg)
-        where TViewModel : IDialogRequestClose, IDialogInitialize<TArg>, IDialogResultProvider<TResult>
-    {
-        var vm = serviceProvider.GetRequiredService<TViewModel>();
-        vm.Initialize(arg);
-        var result = await ShowDialogInternalAsync(vm);
-        return new DialogResult<TResult>(result, vm.GetResult());
+        var result = await ShowDialogInternalAsync(viewModel);
+        return result;
     }
 
     private async Task<bool?> ShowDialogInternalAsync<TViewModel>(TViewModel vm) where TViewModel : IDialogRequestClose
     {
-        var owner = desktop.MainWindow
-            ?? throw new InvalidOperationException("MainWindow is not initialized.");
+        var owner = desktop.Windows.FirstOrDefault(w => w.IsActive)
+                    ?? desktop.MainWindow
+                    ?? throw new InvalidOperationException("No active window found and MainWindow is not initialized.");
 
         var window = new Window
         {
             Content = vm,
             DataContext = vm,
             SizeToContent = SizeToContent.WidthAndHeight,
-            WindowStartupLocation = WindowStartupLocation.CenterOwner
+            WindowStartupLocation = WindowStartupLocation.CenterOwner,
         };
 
         TaskCompletionSource<bool?> tcs = new();

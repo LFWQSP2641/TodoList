@@ -1,9 +1,9 @@
-using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.DependencyInjection;
-using CommunityToolkit.Mvvm.Input;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.DependencyInjection;
+using CommunityToolkit.Mvvm.Input;
 using TodoList.Models;
 using TodoList.Services.Interfaces;
 
@@ -15,13 +15,12 @@ public partial class TodoListWidgetViewModel : ViewModelBase
 
     public IReadOnlyList<TodoLevelItem> LevelOptions { get; } =
     [
-        new TodoLevelItem(TodoLevel.Low,    "低"),
-        new TodoLevelItem(TodoLevel.Medium, "中"),
-        new TodoLevelItem(TodoLevel.High,   "高")
+        new(TodoLevel.Low, "低"),
+        new(TodoLevel.Medium, "中"),
+        new(TodoLevel.High, "高"),
     ];
 
-    [ObservableProperty]
-    public partial TodoItem? SelectedTodo { get; set; }
+    [ObservableProperty] public partial TodoItem? SelectedTodo { get; set; }
 
     private bool CanEditSelectedTodo => SelectedTodo != null;
 
@@ -29,12 +28,16 @@ public partial class TodoListWidgetViewModel : ViewModelBase
     private async Task AddTodoAsync()
     {
         var newTodo = new TodoItem { Title = "New Todo" };
-        var dialogService = Ioc.Default.GetService<IDialogService>()!;
-        var dialogResult = await dialogService.ShowDialogAsync<TodoEditorViewModel, TodoItem, TodoItem>(newTodo);
-        if (dialogResult is { Result: true, Payload: not null })
+        var dialogService = Ioc.Default.GetRequiredService<IDialogService>();
+        var todoEditorViewModel = Ioc.Default.GetRequiredService<TodoEditorViewModel>();
+        todoEditorViewModel.Initialize(newTodo);
+        var dialogResult = await dialogService.ShowDialogAsync(todoEditorViewModel);
+        if (dialogResult != true)
         {
-            Todos.Add(dialogResult.Payload);
+            return;
         }
+        var todo = todoEditorViewModel.GetResult();
+        Todos.Add(todo);
     }
 
     [RelayCommand(CanExecute = nameof(CanEditSelectedTodo))]
@@ -49,17 +52,24 @@ public partial class TodoListWidgetViewModel : ViewModelBase
     [RelayCommand(CanExecute = nameof(CanEditSelectedTodo))]
     private async Task EditTodoAsync()
     {
-        if (SelectedTodo == null) return;
-        var dialogService = Ioc.Default.GetService<IDialogService>()!;
-        var dialogResult = await dialogService.ShowDialogAsync<TodoEditorViewModel, TodoItem, TodoItem>(SelectedTodo);
-        if (dialogResult is { Result: true, Payload: not null })
+        if (SelectedTodo == null)
         {
-            var index = Todos.IndexOf(SelectedTodo);
-            if (index >= 0)
-            {
-                Todos[index] = dialogResult.Payload;
-                SelectedTodo = dialogResult.Payload;
-            }
+            return;
+        }
+        var dialogService = Ioc.Default.GetRequiredService<IDialogService>()!;
+        var todoEditorViewModel = Ioc.Default.GetRequiredService<TodoEditorViewModel>();
+        todoEditorViewModel.Initialize(SelectedTodo);
+        var dialogResult = await dialogService.ShowDialogAsync(todoEditorViewModel);
+        if (dialogResult != true)
+        {
+            return;
+        }
+        var todo = todoEditorViewModel.GetResult();
+        var index = Todos.IndexOf(SelectedTodo);
+        if (index >= 0)
+        {
+            Todos[index] = todo;
+            SelectedTodo = todo;
         }
     }
 
@@ -68,6 +78,9 @@ public partial class TodoListWidgetViewModel : ViewModelBase
         public TodoLevel Value { get; } = value;
         public string DisplayName { get; } = displayName;
 
-        public override string ToString() => DisplayName;
+        public override string ToString()
+        {
+            return DisplayName;
+        }
     }
 }

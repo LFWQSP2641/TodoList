@@ -16,5 +16,5 @@ public enum TodoLevel
 {
     Low,
     Medium,
-    High
+    High,
 }

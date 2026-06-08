@@ -1,9 +1,9 @@
+using System;
+using System.Collections.Generic;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.DependencyInjection;
-using System;
-using System.Collections.Generic;
 using TodoList.ViewModels;
 using TodoList.Views;
 
@@ -23,7 +23,9 @@ public class ViewLocator : IDataTemplate
     public Control Build(object? data)
     {
         if (data is null)
-            return new TextBlock { Text = $"No VM provided" };
+        {
+            return new TextBlock { Text = "No VM provided" };
+        }
 
         _locator.TryGetValue(data.GetType(), out var factory);
 
@@ -35,10 +37,15 @@ public class ViewLocator : IDataTemplate
         return data is ObservableObject;
     }
 
-    public void RegisterViewFactory<TViewModel>(Func<Control> factory) where TViewModel : class => _locator.Add(typeof(TViewModel), factory);
+    public void RegisterViewFactory<TViewModel>(Func<Control> factory) where TViewModel : class
+    {
+        _locator.Add(typeof(TViewModel), factory);
+    }
 
     public void RegisterViewFactory<TViewModel, TView>()
         where TViewModel : class
         where TView : Control
-        => _locator.Add(typeof(TViewModel), Ioc.Default.GetService<TView>);
+    {
+        _locator.Add(typeof(TViewModel), Ioc.Default.GetService<TView>);
+    }
 }

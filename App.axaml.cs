@@ -1,13 +1,10 @@
 using Avalonia;
-using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Controls.Templates;
-using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
 using CommunityToolkit.Extensions.DependencyInjection;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
-using System.Linq;
 using TodoList.Services;
 using TodoList.Services.Interfaces;
 using TodoList.ViewModels;
@@ -30,7 +27,7 @@ public partial class App : Application
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             var services = new ServiceCollection();
-            services.AddSingleton<IClassicDesktopStyleApplicationLifetime>(desktop);
+            services.AddSingleton(desktop);
             services.AddSingleton<IDataTemplate>(locator);
             ConfigureServices(services);
             ConfigureViewModels(services);
